@@ -1,0 +1,123 @@
+// Build Script Classpath
+buildscript {
+    ext {
+        springBootVersion = '2.7.2'
+    }
+}
+
+// Project Plugins
+plugins {
+    id 'tanagra-vumc-admin.java-conventions'
+    id "com.github.ben-manes.versions" version "0.36.0"
+    id "com.google.cloud.tools.jib" version "3.0.0"
+    id "de.undercouch.download" version "4.1.1"
+    id "org.hidetake.swagger.generator" version "2.19.2"
+    id "org.springframework.boot" version "${springBootVersion}"
+    id "io.spring.dependency-management" version "1.0.10.RELEASE"
+    id 'ru.vyarus.quality' version '4.5.0'
+    id 'org.gradle.test-retry' version '1.4.0'
+}
+
+// constants visible to all .gradle files in this project
+project.ext {
+    artifactGroup = "${group}.tanagra.vumc.admin"
+    includeDir = "$projectDir/gradle"
+    openapiOutputDir = "${buildDir}/openapi"
+    resourceDir = "${projectDir}/src/main/resources"
+
+    // where to place the Cloud Profiler agent in the container
+    cloudProfilerLocation = "/opt/cprof"
+
+    // location for jib extras, including the Java agent
+    jibExtraDirectory = "${buildDir}/jib-agents"
+}
+
+//apply(from: "$includeDir/dependencies.gradle")
+
+dependencies {
+    // Google dependencies
+    constraints {
+        implementation 'com.google.guava:guava:31.1-jre' // "-jre" for Java 8 or higher
+    }
+    implementation platform('com.google.cloud:libraries-bom:25.1.0')
+    implementation group: "com.google.guava", name:"guava"
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.4.0'
+    implementation group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.42.3"
+    implementation 'com.google.apis:google-api-services-oauth2:v2-rev20200213-1.32.1'
+
+    // Core Tanagra dependency
+    implementation group: "bio.terra", name: "tanagra-client", version: "0.0.7-SNAPSHOT"
+    implementation group: "bio.terra", name: "terra-common-lib", version: "0.0.69-SNAPSHOT"
+
+    // Opencensus utilities for various HTTP clients
+    implementation group: "io.opencensus", name: "opencensus-contrib-http-jaxrs", version: "0.28.3"
+
+    // Versioned direct deps
+    implementation group: "org.hashids", name: "hashids", version: "1.0.3"
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.13.2"
+    implementation group: "org.liquibase", name: "liquibase-core", version: "4.8.0"
+    implementation group: "org.webjars", name: "webjars-locator-core", version: "0.46"
+    runtimeOnly group: "org.postgresql", name: "postgresql", version: "42.3.3"
+
+    // Deps whose versions are controlled by Spring
+    implementation group: "javax.validation", name: "validation-api"
+    implementation group: "org.apache.commons", name: "commons-dbcp2"
+    implementation group: "org.apache.commons", name: "commons-lang3"
+    implementation group: "org.apache.commons", name: "commons-pool2"
+    implementation group: "org.apache.logging.log4j", name: "log4j-api"
+    implementation group: "org.apache.logging.log4j", name: "log4j-to-slf4j"
+    implementation group: "commons-validator", name: "commons-validator", version: "1.7"
+    implementation group: "io.swagger.core.v3", name: "swagger-annotations"
+    implementation group: "io.swagger", name: "swagger-annotations", version: "1.6.2"
+    implementation group: "org.springframework.boot", name: "spring-boot-starter-data-jdbc"
+    implementation group: "org.springframework.boot", name: "spring-boot-starter-web"
+    implementation group: "org.springframework.boot", name: "spring-boot-starter-validation"
+    implementation group: "org.springframework.retry", name: "spring-retry"
+    implementation group: "org.springframework.security", name: "spring-security-core"
+    implementation group: "org.glassfish.jersey.core", name: "jersey-client", version: "2.32"
+
+    // OpenAPI (swagger) deps
+    implementation gradle.librarySwaggerAnnotations
+    swaggerCodegen gradle.librarySwaggerCli
+    runtimeOnly group: "org.webjars.npm", name: "swagger-ui-dist", version: "3.37.2"
+
+    // Spotbugs dependency
+    // For SpotBugs annotations
+    compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugs.toolVersion.get()}"
+    spotbugs "com.github.spotbugs:spotbugs:${spotbugs.toolVersion.get()}"
+
+    // Test deps
+    testImplementation group: "io.vavr", name: "vavr", version: "0.10.3"
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+    testImplementation group: "org.hamcrest", name: "hamcrest", version: "2.2"
+    testImplementation "org.testcontainers:testcontainers:1.17.5"
+    testImplementation "org.testcontainers:junit-jupiter:1.17.5"
+    testImplementation "org.testcontainers:postgresql:1.17.5"
+
+    annotationProcessor group: "org.springframework.boot", name: "spring-boot-configuration-processor", version: "2.6.6"
+}
+
+// A small wrapper around bootRun to run the server instrumented with Jacoco
+// code coverage tracking. This is useful for running a local server for
+// integration tests, but live environments should use `bootRun` instead and
+// should not be instrumented.
+// This must live in the same file that the Spring Boot plugin is applied in or
+// else it can't find the task type.
+def googleCredentialsFile = "${rootDir}/rendered/tanagra_sa.json"
+task jacocoBootRun(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+    environment.put("GOOGLE_APPLICATION_CREDENTIALS", "${googleCredentialsFile}")
+    classpath = sourceSets.main.runtimeClasspath
+    main("bio.terra.workspace.app.Main")
+}
+jacoco {
+    applyTo jacocoBootRun
+}
+
+// include order matters, so don't alphabetize
+apply(from: "$includeDir/profiler.gradle")
+apply(from: "$includeDir/jib.gradle")
+apply(from: "$includeDir/openapi.gradle")
+apply(from: "$includeDir/version-properties.gradle")
+apply(from: "$includeDir/task-dependencies.gradle")
