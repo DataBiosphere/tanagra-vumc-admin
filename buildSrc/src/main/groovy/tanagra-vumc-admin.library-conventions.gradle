@@ -1,0 +1,34 @@
+// Java Library conventions common for all of the code
+plugins {
+    id 'tanagra-vumc-admin.java-conventions'
+
+    id 'java-library'
+    id 'maven-publish'
+    id 'com.jfrog.artifactory'
+}
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+java {
+    // Builds Javadoc into the published package as part of the 'assemble' task.
+    withJavadocJar()
+    // Builds sources into the published package as part of the 'assemble' task.
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        tanagraVumcAdminClientLibrary(MavenPublication) {
+            artifactId = "tanagra-vumc-admin-client"
+            from components.java
+            versionMapping {
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+        }
+    }
+}

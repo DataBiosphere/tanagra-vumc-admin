@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: initial
+      author: marikomedlock
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: user_id
+                  type: text
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_email
+                  type: text
+                  constraints:
+                    nullable: false

@@ -1,0 +1,31 @@
+// This pluginManagement block is needed for resolving the test-runner plugin.
+// It has to live in settings even though it only applies to the integration project.
+pluginManagement {
+ repositories {
+     resolutionStrategy {
+         eachPlugin {
+             if (requested.id.namespace == 'bio.terra') {
+                 if (requested.id.id == 'bio.terra.test-runner-plugin' || requested.id.id == 'bio.terra.test-runner-echo-plugin') {
+                     useModule("bio.terra:terra-test-runner:" + requested.version)
+                 }
+             }
+         }
+     }
+     maven {
+         url "https://broadinstitute.jfrog.io/broadinstitute/libs-snapshot-local/"
+     }
+     gradlePluginPortal()
+ }
+}
+
+rootProject.name = 'tanagra-vumc-admin'
+include 'client'
+include 'service'
+
+// -- Global Variables --
+// For defining shared state and common dependencies
+gradle.ext.releaseVersion="0.0.1-SNAPSHOT"
+
+// Single place to define the versions of dependencies shared between components.
+gradle.ext.librarySwaggerAnnotations = "io.swagger.core.v3:swagger-annotations:2.1.6"
+gradle.ext.librarySwaggerCli = "io.swagger.codegen.v3:swagger-codegen-cli:3.0.23"

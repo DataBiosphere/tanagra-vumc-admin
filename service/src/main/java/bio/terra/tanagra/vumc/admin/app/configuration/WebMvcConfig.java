@@ -1,0 +1,27 @@
+package bio.terra.tanagra.vumc.admin.app.configuration;
+
+import bio.terra.tanagra.vumc.admin.app.controller.AuthenticationInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+  private final AuthenticationInterceptor authInterceptor;
+
+  @Autowired
+  public WebMvcConfig(AuthenticationInterceptor authInterceptor) {
+    this.authInterceptor = authInterceptor;
+  }
+
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry
+        .addInterceptor(authInterceptor)
+        .addPathPatterns("/**")
+        .excludePathPatterns(
+            "/swagger-resources/**", "/swagger-ui.html", "/service_openapi.yaml", "/webjars/**");
+  }
+}
