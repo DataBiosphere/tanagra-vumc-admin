@@ -1,4 +1,4 @@
-package bio.terra.tanagra.vumc.admin.service.exception;
+package bio.terra.tanagra.vumc.admin.service.authentication.exception;
 
 /**
  * Custom exception class for system or internal exceptions. These represent errors that the user

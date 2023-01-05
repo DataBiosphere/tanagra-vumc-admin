@@ -2,7 +2,7 @@ admin:
   tanagra-core:
     base-path: https://tanagra-dev.api.verily.com
     oauth-client-id: 694046000181-baqla782scqfaaga26869orhhd8o7vjo.apps.googleusercontent.com
-    use-adc: false
+    use-adc: true
 
   auth:
     disable-checks: false
@@ -13,9 +13,9 @@ admin:
   db:
     initialize-on-start: false
     upgrade-on-start: true
-    uri: jdbc:postgresql://127.0.0.1:5432/${ADMIN_DATABASE_NAME}
-    username:
-    password:
+    uri: jdbc:postgresql://127.0.0.1:5432/admin_db
+    username: dbuser
+    password: dbpwd
 
 logging.pattern.level: '%X{requestId} %5p'
 

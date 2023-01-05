@@ -1,4 +1,4 @@
-package bio.terra.tanagra.vumc.admin.service.exception;
+package bio.terra.tanagra.vumc.admin.service.authentication.exception;
 
 import bio.terra.common.exception.UnauthorizedException;
 

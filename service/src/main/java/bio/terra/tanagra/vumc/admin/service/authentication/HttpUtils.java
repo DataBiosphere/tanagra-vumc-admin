@@ -1,6 +1,6 @@
 package bio.terra.tanagra.vumc.admin.service.authentication;
 
-import bio.terra.tanagra.vumc.admin.service.exception.SystemException;
+import bio.terra.tanagra.vumc.admin.service.authentication.exception.SystemException;
 import java.time.Duration;
 import java.util.function.Predicate;
 import org.slf4j.Logger;

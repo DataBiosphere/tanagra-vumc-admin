@@ -21,6 +21,6 @@ public final class BearerTokenUtils {
     Userinfo userInfo =
         HttpUtils.callWithRetries(
             () -> oauth2.userinfo().get().execute(), ex -> ex instanceof IOException);
-    return UserId.fromToken(userInfo.getId(), userInfo.getEmail());
+    return UserId.fromToken(userInfo.getId(), userInfo.getEmail(), bearerToken.getToken());
   }
 }

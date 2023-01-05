@@ -1,6 +1,6 @@
 package bio.terra.tanagra.vumc.admin.service.authentication;
 
-import bio.terra.tanagra.vumc.admin.service.exception.InvalidTokenException;
+import bio.terra.tanagra.vumc.admin.service.authentication.exception.InvalidTokenException;
 import com.google.api.client.json.webtoken.JsonWebToken;
 import com.google.auth.oauth2.TokenVerifier;
 import javax.servlet.http.HttpServletRequest;
@@ -29,18 +29,20 @@ public final class IapJwtUtils {
         jwt,
         String.format(
             "/projects/%s/global/backendServices/%s",
-            Long.toUnsignedString(projectNumber), Long.toUnsignedString(backendServiceId)));
+            Long.toUnsignedString(projectNumber), Long.toUnsignedString(backendServiceId)),
+        IAP_ISSUER_URL);
   }
 
   public static UserId verifyJwtForAppEngine(String jwt, long projectNumber, String projectId) {
     return verifyJwt(
         jwt,
-        String.format("/projects/%s/apps/%s", Long.toUnsignedString(projectNumber), projectId));
+        String.format("/projects/%s/apps/%s", Long.toUnsignedString(projectNumber), projectId),
+        IAP_ISSUER_URL);
   }
 
-  private static UserId verifyJwt(String jwt, String expectedAudience) {
+  public static UserId verifyJwt(String jwt, String expectedAudience, String issuer) {
     TokenVerifier tokenVerifier =
-        TokenVerifier.newBuilder().setAudience(expectedAudience).setIssuer(IAP_ISSUER_URL).build();
+        TokenVerifier.newBuilder().setAudience(expectedAudience).setIssuer(issuer).build();
     try {
       JsonWebToken jsonWebToken = tokenVerifier.verify(jwt);
       JsonWebToken.Payload payload = jsonWebToken.getPayload();
@@ -53,7 +55,7 @@ public final class IapJwtUtils {
                 + ", "
                 + payload.get("email"));
       }
-      return UserId.fromToken(payload.getSubject(), (String) payload.get("email"));
+      return UserId.fromToken(payload.getSubject(), (String) payload.get("email"), jwt);
     } catch (TokenVerifier.VerificationException tve) {
       LOGGER.info("JWT expected audience: {}", expectedAudience);
       throw new InvalidTokenException("JWT verification failed", tve);
