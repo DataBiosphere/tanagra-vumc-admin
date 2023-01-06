@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Service
 public class AuthInterceptor implements HandlerInterceptor {
   private static final Logger LOGGER = LoggerFactory.getLogger(AuthInterceptor.class);
+  private static final String OPENAPI_TAG_AUTH_NOT_REQUIRED = "Unauthenticated";
 
   private final AuthConfiguration authConfiguration;
 
@@ -56,28 +57,16 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     HandlerMethod method = (HandlerMethod) handler;
-    boolean isAuthRequired = false;
     Operation apiOp = AnnotationUtils.findAnnotation(method.getMethod(), Operation.class);
     if (apiOp != null) {
-      SecurityRequirement[] authorizations = apiOp.security();
-      for (SecurityRequirement auth : apiOp.security()) {
-        if (!auth.name().isEmpty()) {
-          LOGGER.info("Authorization required by endpoint: {}", request.getRequestURL().toString());
-          isAuthRequired = true;
-          break;
+      for (String tag : apiOp.tags()) {
+        if (!tag.isEmpty() && OPENAPI_TAG_AUTH_NOT_REQUIRED.equals(tag)) {
+          LOGGER.info("Authorization not required by endpoint: {}", request.getRequestURL().toString());
+          return true;
         }
-        LOGGER.info("auth.value(): {}", auth.name());
       }
-    } else {
-      LOGGER.info(
-          "apiOp=null: {}, {}",
-          method.getMethod().getName(),
-          method.getMethod().getDeclaringClass().getName());
     }
-    if (!isAuthRequired) {
-      LOGGER.info("Authorization not required by endpoint: {}", request.getRequestURL().toString());
-      return true;
-    }
+    LOGGER.info("Authorization required by endpoint: {}", request.getRequestURL().toString());
 
     UserId userId;
     try {

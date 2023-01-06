@@ -16,7 +16,6 @@ security:
 paths:
   /admin/status:
     get:
-      security: []
       summary: Returns the operational status of the service
       operationId: serviceStatus
       tags: [Unauthenticated]
@@ -28,7 +27,6 @@ paths:
 
   /admin/version:
     get:
-      security: []
       summary: Returns the deployed version of the service
       operationId: serviceVersion
       tags: [Unauthenticated]
