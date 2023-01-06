@@ -2,7 +2,7 @@ package bio.terra.tanagra.vumc.admin.app.controller;
 
 import bio.terra.tanagra.model.UserProfileV2;
 import bio.terra.tanagra.vumc.admin.generated.controller.TestApi;
-import bio.terra.tanagra.vumc.admin.generated.model.ApiCoreAuthTest;
+import bio.terra.tanagra.vumc.admin.generated.model.ApiCoreServiceTest;
 import bio.terra.tanagra.vumc.admin.service.TanagraCoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class TestApiController implements TestApi {
   }
 
   @Override
-  public ResponseEntity<ApiCoreAuthTest> coreAuthTest() {
+  public ResponseEntity<ApiCoreServiceTest> coreServiceTest() {
     String noAuthMsg;
     try {
       tanagraCoreService.status();
@@ -41,6 +41,6 @@ public class TestApiController implements TestApi {
       withAuthMsg = "getMe=error: " + ex.getMessage();
     }
 
-    return ResponseEntity.ok(new ApiCoreAuthTest().noAuth(noAuthMsg).withAuth(withAuthMsg));
+    return ResponseEntity.ok(new ApiCoreServiceTest().noAuth(noAuthMsg).withAuth(withAuthMsg));
   }
 }

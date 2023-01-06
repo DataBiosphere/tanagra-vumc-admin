@@ -77,18 +77,18 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /admin/core-auth-test:
+  /admin/core-service-test:
     get:
       tags: [Test]
-      description: Temporary endpoint to test service-to-service communication with core Tanagra.
-      operationId: coreAuthTest
+      description: Temporary endpoint to test service-to-service communication with the core Tanagra service.
+      operationId: coreServiceTest
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CoreAuthTest'
+                $ref: '#/components/schemas/CoreServiceTest'
         401:
           description: Unauthorized
         500:
@@ -142,14 +142,6 @@ components:
             $ref: '#/components/schemas/ErrorReport'
 
   schemas:
-    CoreAuthTest:
-      type: object
-      properties:
-        no-auth:
-          type: string
-        with-auth:
-          type: string
-
     SystemVersion:
       type: object
       required: [gitTag, gitHash, github, build]
@@ -171,6 +163,14 @@ components:
       type: array
       items:
         type: string
+
+    CoreServiceTest:
+      type: object
+      properties:
+        no-auth:
+          type: string
+        with-auth:
+          type: string
 
     ErrorReport:
       type: object
