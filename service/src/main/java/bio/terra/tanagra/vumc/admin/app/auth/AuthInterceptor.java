@@ -9,8 +9,8 @@ import bio.terra.tanagra.vumc.admin.service.authentication.IapJwtUtils;
 import bio.terra.tanagra.vumc.admin.service.authentication.UserId;
 import bio.terra.tanagra.vumc.admin.service.authentication.exception.InvalidTokenException;
 import com.google.api.client.http.HttpMethods;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -57,16 +57,22 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     HandlerMethod method = (HandlerMethod) handler;
     boolean isAuthRequired = false;
-    ApiOperation apiOp = AnnotationUtils.findAnnotation(method.getMethod(), ApiOperation.class);
+    Operation apiOp = AnnotationUtils.findAnnotation(method.getMethod(), Operation.class);
     if (apiOp != null) {
-      Authorization[] authorizations = apiOp.authorizations();
-      for (Authorization auth : apiOp.authorizations()) {
-        if (!auth.value().isEmpty()) {
+      SecurityRequirement[] authorizations = apiOp.security();
+      for (SecurityRequirement auth : apiOp.security()) {
+        if (!auth.name().isEmpty()) {
           LOGGER.info("Authorization required by endpoint: {}", request.getRequestURL().toString());
           isAuthRequired = true;
           break;
         }
+        LOGGER.info("auth.value(): {}", auth.name());
       }
+    } else {
+      LOGGER.info(
+          "apiOp=null: {}, {}",
+          method.getMethod().getName(),
+          method.getMethod().getDeclaringClass().getName());
     }
     if (!isAuthRequired) {
       LOGGER.info("Authorization not required by endpoint: {}", request.getRequestURL().toString());

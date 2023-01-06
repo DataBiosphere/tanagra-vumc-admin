@@ -79,11 +79,12 @@ paths:
 
   /admin/core-auth-test:
     get:
-      tags: [Authorization]
+      tags: [Test]
       description: Temporary endpoint to test service-to-service communication with core Tanagra.
       operationId: coreAuthTest
       responses:
         200:
+          description: OK
           content:
             application/json:
               schema:
