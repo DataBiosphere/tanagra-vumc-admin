@@ -7,7 +7,7 @@ import bio.terra.tanagra.vumc.admin.app.configuration.AuthConfiguration;
 import bio.terra.tanagra.vumc.admin.service.authentication.BearerTokenUtils;
 import bio.terra.tanagra.vumc.admin.service.authentication.IapJwtUtils;
 import bio.terra.tanagra.vumc.admin.service.authentication.UserId;
-import bio.terra.tanagra.vumc.admin.service.authentication.exception.InvalidTokenException;
+import bio.terra.tanagra.vumc.admin.service.authentication.InvalidCredentialsException;
 import com.google.api.client.http.HttpMethods;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -103,7 +103,7 @@ public class AuthInterceptor implements HandlerInterceptor {
       } else {
         throw new InternalServerErrorException("Invalid auth configuration");
       }
-    } catch (InvalidTokenException ite) {
+    } catch (InvalidCredentialsException ite) {
       LOGGER.error("Authentication failed", ite);
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return false;

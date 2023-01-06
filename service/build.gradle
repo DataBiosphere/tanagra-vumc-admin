@@ -46,7 +46,7 @@ dependencies {
     // Core Tanagra dependency
     implementation group: "bio.terra", name: "tanagra-client", version: "0.0.7-SNAPSHOT"
     implementation group: "org.glassfish.jersey.core", name: "jersey-client", version: "2.36"
-    // hk2 is required to use WSM client, but not correctly exposed by the client
+    // hk2 is required to use core Tanagra client, but not correctly exposed by the client
     implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '2.36'
 
     implementation group: "bio.terra", name: "terra-common-lib", version: "0.0.69-SNAPSHOT"

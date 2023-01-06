@@ -1,4 +1,4 @@
-package bio.terra.tanagra.vumc.admin.app.configuration;
+package bio.terra.tanagra.vumc.admin.app;
 
 import bio.terra.tanagra.vumc.admin.app.auth.AuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;

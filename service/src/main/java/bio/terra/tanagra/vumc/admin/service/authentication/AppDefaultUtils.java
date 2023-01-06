@@ -1,6 +1,5 @@
 package bio.terra.tanagra.vumc.admin.service.authentication;
 
-import bio.terra.tanagra.vumc.admin.service.authentication.exception.SystemException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.IdToken;
 import com.google.auth.oauth2.IdTokenCredentials;
@@ -29,13 +28,13 @@ public final class AppDefaultUtils {
       GoogleCredentials applicationDefaultCredentials, List<String> scopes, String targetAudience) {
     GoogleCredentials scopedCredentials = applicationDefaultCredentials.createScoped(scopes);
     if (!(scopedCredentials instanceof IdTokenProvider)) {
-      throw new SystemException(
+      throw new InvalidCredentialsException(
           "Passed credential is not an IdTokenProvider, please ensure only scoped ADC are passed.");
     } else if (scopedCredentials instanceof UserCredentials) {
       // Unlike for ServiceAccountCredentials, it doesn't seem possible to set the target audience
       // for UserCredentials below. An ID token is returned but with the gcloud client id as the
       // audience, not the target one passed in here.
-      throw new SystemException(
+      throw new InvalidCredentialsException(
           "Only service accounts are supported when using application default credentials. Please set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account key file path.");
     }
 
@@ -52,7 +51,7 @@ public final class AppDefaultUtils {
     try {
       idTokenCredentials.refresh();
     } catch (IOException ioEx) {
-      throw new SystemException("Error refreshing ID token", ioEx);
+      throw new InvalidCredentialsException("Error refreshing ID token", ioEx);
     }
     return idTokenCredentials.getIdToken();
   }
@@ -62,7 +61,7 @@ public final class AppDefaultUtils {
     try {
       return GoogleCredentials.getApplicationDefault();
     } catch (IOException ioEx) {
-      throw new SystemException(
+      throw new InvalidCredentialsException(
           "Application default credentials are not defined. Run `gcloud auth application-default login`",
           ioEx);
     }

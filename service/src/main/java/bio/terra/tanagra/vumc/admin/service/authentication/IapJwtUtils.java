@@ -1,6 +1,5 @@
 package bio.terra.tanagra.vumc.admin.service.authentication;
 
-import bio.terra.tanagra.vumc.admin.service.authentication.exception.InvalidTokenException;
 import com.google.api.client.json.webtoken.JsonWebToken;
 import com.google.auth.oauth2.TokenVerifier;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,7 @@ public final class IapJwtUtils {
     // Check for iap jwt header in incoming request
     String jwt = request.getHeader("x-goog-iap-jwt-assertion");
     if (jwt == null) {
-      throw new InvalidTokenException("JWT is null");
+      throw new InvalidCredentialsException("JWT is null");
     }
     return jwt;
   }
@@ -49,7 +48,7 @@ public final class IapJwtUtils {
 
       // Verify that the token contain subject and email claims
       if (payload.getSubject() == null || payload.get("email") == null) {
-        throw new InvalidTokenException(
+        throw new InvalidCredentialsException(
             "Subject or email not included in JWT payload: "
                 + payload.getSubject()
                 + ", "
@@ -58,7 +57,7 @@ public final class IapJwtUtils {
       return UserId.fromToken(payload.getSubject(), (String) payload.get("email"), jwt);
     } catch (TokenVerifier.VerificationException tve) {
       LOGGER.info("JWT expected audience: {}", expectedAudience);
-      throw new InvalidTokenException("JWT verification failed", tve);
+      throw new InvalidCredentialsException("JWT verification failed", tve);
     }
   }
 }
