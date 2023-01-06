@@ -14,7 +14,7 @@ security:
   - authorization: [openid, email, profile]
 
 paths:
-  /status:
+  /admin/status:
     get:
       security: []
       summary: Returns the operational status of the service
@@ -26,7 +26,7 @@ paths:
         500:
           description: Service is broken
 
-  /version:
+  /admin/version:
     get:
       security: []
       summary: Returns the deployed version of the service
@@ -42,7 +42,7 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /isAuthorized/{action}/{resourceType}/{resourceId}/{userEmail}:
+  /admin/isAuthorized/{action}/{resourceType}/{resourceId}/{userEmail}:
     parameters:
       - $ref: '#/components/parameters/Action'
       - $ref: '#/components/parameters/ResourceType'
@@ -60,7 +60,7 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /listAuthorizedResources/{resourceType}/{userEmail}:
+  /admin/listAuthorizedResources/{resourceType}/{userEmail}:
     parameters:
       - $ref: '#/components/parameters/ResourceType'
       - $ref: '#/components/parameters/UserEmail'
