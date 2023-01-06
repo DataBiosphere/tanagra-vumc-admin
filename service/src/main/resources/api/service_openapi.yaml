@@ -77,6 +77,22 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
+  /admin/core-auth-test:
+    get:
+      tags: [Authorization]
+      description: Temporary endpoint to test service-to-service communication with core Tanagra.
+      operationId: coreAuthTest
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoreAuthTest'
+        401:
+          description: Unauthorized
+        500:
+          $ref: '#/components/responses/ServerError'
+
 components:
   parameters:
     UserEmail:
@@ -125,6 +141,14 @@ components:
             $ref: '#/components/schemas/ErrorReport'
 
   schemas:
+    CoreAuthTest:
+      type: object
+      properties:
+        no-auth:
+          type: string
+        with-auth:
+          type: string
+
     SystemVersion:
       type: object
       required: [gitTag, gitHash, github, build]
