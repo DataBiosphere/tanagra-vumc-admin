@@ -2,7 +2,7 @@ admin:
   tanagra-core:
     base-path: https://tanagra-dev.api.verily.com
     oauth-client-id: 694046000181-baqla782scqfaaga26869orhhd8o7vjo.apps.googleusercontent.com
-    use-adc: false
+    use-adc: true
 
   auth:
     disable-checks: false
