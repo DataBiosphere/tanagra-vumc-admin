@@ -165,9 +165,9 @@ components:
     CoreServiceTest:
       type: object
       properties:
-        no-auth:
+        version:
           type: string
-        with-auth:
+        authenticated-user:
           type: string
 
     ErrorReport:

@@ -1,5 +1,6 @@
 package bio.terra.tanagra.vumc.admin.app.controller;
 
+import bio.terra.tanagra.model.SystemVersionV2;
 import bio.terra.tanagra.model.UserProfileV2;
 import bio.terra.tanagra.vumc.admin.generated.controller.TestApi;
 import bio.terra.tanagra.vumc.admin.generated.model.ApiCoreServiceTest;
@@ -23,24 +24,31 @@ public class TestApiController implements TestApi {
 
   @Override
   public ResponseEntity<ApiCoreServiceTest> coreServiceTest() {
-    String noAuthMsg;
+    String version;
     try {
-      tanagraCoreService.status();
-      noAuthMsg = "status=success";
+      SystemVersionV2 coreVersion = tanagraCoreService.version();
+      version =
+          String.format(
+              "gitTag: %s, gitHash: %s, github: %s, build: %s",
+              coreVersion.getGitTag(),
+              coreVersion.getGitHash(),
+              coreVersion.getGithub(),
+              coreVersion.getBuild());
     } catch (Exception ex) {
-      LOGGER.error("no auth", ex);
-      noAuthMsg = "status=error: " + ex.getMessage();
+      LOGGER.error("core service version", ex);
+      version = "error: " + ex.getMessage();
     }
 
-    String withAuthMsg;
+    String authenticatedUser;
     try {
       UserProfileV2 userProfileV2 = tanagraCoreService.currentUser();
-      withAuthMsg = "getMe=" + userProfileV2.getEmail();
+      authenticatedUser = "email: " + userProfileV2.getEmail();
     } catch (Exception ex) {
-      LOGGER.error("with auth", ex);
-      withAuthMsg = "getMe=error: " + ex.getMessage();
+      LOGGER.error("core service authenticated user", ex);
+      authenticatedUser = "error: " + ex.getMessage();
     }
 
-    return ResponseEntity.ok(new ApiCoreServiceTest().noAuth(noAuthMsg).withAuth(withAuthMsg));
+    return ResponseEntity.ok(
+        new ApiCoreServiceTest().version(version).authenticatedUser(authenticatedUser));
   }
 }

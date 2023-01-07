@@ -1,9 +1,9 @@
 package bio.terra.tanagra.vumc.admin.service;
 
 import bio.terra.tanagra.client.ApiException;
+import bio.terra.tanagra.model.SystemVersionV2;
 import bio.terra.tanagra.vumc.admin.app.Main;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -24,14 +24,13 @@ public class TanagraCoreServiceTest {
   @Autowired private TanagraCoreService tanagraCoreService;
 
   @Test
-  @DisplayName("unauthenticated endpoint")
-  void status() throws ApiException {
-    tanagraCoreService.status();
-    LOGGER.info("status returned success");
+  void version() throws ApiException {
+    SystemVersionV2 coreServiceVersion = tanagraCoreService.version();
+    Assertions.assertNotNull(coreServiceVersion);
+    LOGGER.info("status returned success: {}", coreServiceVersion);
   }
 
   @Test
-  @DisplayName("authenticated endpoint")
   void currentUser() throws ApiException {
     String authenticatedCoreUser = tanagraCoreService.currentUser().getEmail();
     Assertions.assertNotNull(authenticatedCoreUser);

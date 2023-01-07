@@ -5,6 +5,7 @@ import bio.terra.tanagra.api.UnauthenticatedApi;
 import bio.terra.tanagra.api.UsersV2Api;
 import bio.terra.tanagra.client.ApiClient;
 import bio.terra.tanagra.client.ApiException;
+import bio.terra.tanagra.model.SystemVersionV2;
 import bio.terra.tanagra.model.UserProfileV2;
 import bio.terra.tanagra.vumc.admin.app.auth.SpringAuthentication;
 import bio.terra.tanagra.vumc.admin.app.configuration.TanagraCoreConfiguration;
@@ -54,12 +55,11 @@ public class TanagraCoreService {
     return getApiClient(userId.getToken());
   }
 
-  public void status() throws ApiException {
-    new UnauthenticatedApi(getApiClientUnauthenticated()).serviceStatus();
+  public SystemVersionV2 version() throws ApiException {
+    return new UnauthenticatedApi(getApiClientUnauthenticated()).serviceVersion();
   }
 
   public UserProfileV2 currentUser() throws ApiException {
-    UsersV2Api usersApi = new UsersV2Api(getApiClientAuthenticated());
-    return usersApi.getMe();
+    return new UsersV2Api(getApiClientAuthenticated()).getMe();
   }
 }

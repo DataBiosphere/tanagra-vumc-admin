@@ -1,9 +1,4 @@
 admin:
-  tanagra-core:
-    base-path: https://tanagra-dev.api.verily.com
-    oauth-client-id: 694046000181-baqla782scqfaaga26869orhhd8o7vjo.apps.googleusercontent.com
-    use-adc: true
-
   auth:
     disable-checks: false
     iap-gke-jwt: true
@@ -16,6 +11,11 @@ admin:
     uri: jdbc:postgresql://127.0.0.1:5432/admin_db
     username: dbuser
     password: dbpwd
+
+  tanagra-core:
+    base-path: https://tanagra-dev.api.verily.com
+    oauth-client-id: 694046000181-baqla782scqfaaga26869orhhd8o7vjo.apps.googleusercontent.com
+    use-adc: true
 
 logging.pattern.level: '%X{requestId} %5p'
 

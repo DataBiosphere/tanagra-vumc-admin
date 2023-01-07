@@ -10,7 +10,6 @@ import bio.terra.tanagra.vumc.admin.service.authentication.InvalidCredentialsExc
 import bio.terra.tanagra.vumc.admin.service.authentication.UserId;
 import com.google.api.client.http.HttpMethods;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -25,6 +24,11 @@ import org.springframework.web.servlet.ModelAndView;
 @Service
 public class AuthInterceptor implements HandlerInterceptor {
   private static final Logger LOGGER = LoggerFactory.getLogger(AuthInterceptor.class);
+
+  // For OpenAPI endpoints with this tag, we don't check for an authorization token in the request
+  // header (e.g. status, version). Depending on how the service is deployed and routes are
+  // configured, an authorization token may still be required for the request to make it past the
+  // proxy.
   private static final String OPENAPI_TAG_AUTH_NOT_REQUIRED = "Unauthenticated";
 
   private final AuthConfiguration authConfiguration;
@@ -61,7 +65,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     if (apiOp != null) {
       for (String tag : apiOp.tags()) {
         if (!tag.isEmpty() && OPENAPI_TAG_AUTH_NOT_REQUIRED.equals(tag)) {
-          LOGGER.info("Authorization not required by endpoint: {}", request.getRequestURL().toString());
+          LOGGER.info(
+              "Authorization not required by endpoint: {}", request.getRequestURL().toString());
           return true;
         }
       }
