@@ -38,11 +38,6 @@ public class TanagraCoreService {
     return client;
   }
 
-  /** Return an ApiClient with no token set. */
-  private ApiClient getApiClientUnauthenticated() {
-    return getApiClient("");
-  }
-
   /**
    * Return an ApiClient with a token from the currently authenticated user or the application
    * default credentials, depending on the configuration flag.
@@ -56,7 +51,9 @@ public class TanagraCoreService {
   }
 
   public SystemVersionV2 version() throws ApiException {
-    return new UnauthenticatedApi(getApiClientUnauthenticated()).serviceVersion();
+    // Use an authenticated client here, even though the version endpoint is part of the
+    // UnauthenticatedApi in case all endpoints are behind IAP.
+    return new UnauthenticatedApi(getApiClientAuthenticated()).serviceVersion();
   }
 
   public UserProfileV2 currentUser() throws ApiException {
