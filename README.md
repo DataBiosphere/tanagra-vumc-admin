@@ -82,12 +82,12 @@ tanagra-core:
 
 ### Authentication
 The Verily environments are behind [IAP](https://cloud.google.com/iap) and users need to be explicitly allow-listed
-before they can hit any endpoints there. I went ahead and allow-listed Broad and VUMC service accounts.
+before they can hit any endpoints there. I went ahead and allow-listed Broad and VUMC service accounts. The Broad 
+service account is used by this repo's GitHub actions for running tests.
   - `tanagra@broad-tanagra-dev.iam.gserviceaccount.com`
   - `tanagra-admin-worker@victr-tanagra-deploytest.iam.gserviceaccount.com`
-The Broad service account is used by this repo's GitHub actions for running tests.
 
-You can run a local admin service that talks to a Verily core service by setting the application default credentials
+You can run a local admin service that talks to a core service by setting the application default credentials
 before kicking off the service:
 ```
 export GOOGLE_APPLICATION_CREDENTIALS=path/to/service/account/key/file.json
