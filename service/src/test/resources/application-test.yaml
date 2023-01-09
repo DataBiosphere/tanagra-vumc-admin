@@ -13,8 +13,12 @@ admin:
     password: dbpwd
 
   tanagra-core:
-    base-path: https://tanagra-test.api.verily.com
-    oauth-client-id: 730051649108-uepfa779jvl5ct2u7thfkqje5gda0ona.apps.googleusercontent.com
+    # These URLs are for the Verily dev deployment, which is more stable than the Verily test deployment.
+    # The test deployment values are:
+    #   base-path: https://tanagra-test.api.verily.com
+    #   oauth-client-id: 730051649108-uepfa779jvl5ct2u7thfkqje5gda0ona.apps.googleusercontent.com
+    base-path: https://tanagra-dev.api.verily.com
+    oauth-client-id: 694046000181-baqla782scqfaaga26869orhhd8o7vjo.apps.googleusercontent.com
     use-adc: true
 
 logging.pattern.level: '%X{requestId} %5p'
