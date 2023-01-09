@@ -44,7 +44,7 @@ dependencies {
     implementation 'com.google.apis:google-api-services-oauth2:v2-rev20200213-1.32.1'
 
     // Core Tanagra dependency
-    implementation group: "bio.terra", name: "tanagra-client", version: "0.0.12a-SNAPSHOT"
+    implementation group: "bio.terra", name: "tanagra-client", version: "0.0.14-SNAPSHOT"
     implementation group: "org.glassfish.jersey.core", name: "jersey-client", version: "2.36"
     // hk2 is required to use core Tanagra client, but not correctly exposed by the client
     implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '2.36'
