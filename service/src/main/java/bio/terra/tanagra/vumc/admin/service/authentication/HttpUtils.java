@@ -1,6 +1,6 @@
 package bio.terra.tanagra.vumc.admin.service.authentication;
 
-import bio.terra.tanagra.vumc.admin.service.exception.SystemException;
+import bio.terra.common.exception.InternalServerErrorException;
 import java.time.Duration;
 import java.util.function.Predicate;
 import org.slf4j.Logger;
@@ -24,8 +24,8 @@ public class HttpUtils {
    * @param makeRequest function to perform the request
    * @param isRetryable function to test whether the exception is retryable or not
    * @throws E if makeRequest throws an exception that is not retryable
-   * @throws SystemException if the maximum number of retries is exhausted, and the last attempt
-   *     threw a retryable exception
+   * @throws InternalServerErrorException if the maximum number of retries is exhausted, and the
+   *     last attempt threw a retryable exception
    */
   public static <E extends Exception> void callWithRetries(
       RunnableWithCheckedException<E> makeRequest, Predicate<Exception> isRetryable)
@@ -50,8 +50,8 @@ public class HttpUtils {
    * @param <T> type of the response object (i.e. return type of the makeRequest function)
    * @return the response object
    * @throws E if makeRequest throws an exception that is not retryable
-   * @throws SystemException if the maximum number of retries is exhausted, and the last attempt
-   *     threw a retryable exception
+   * @throws InternalServerErrorException if the maximum number of retries is exhausted, and the
+   *     last attempt threw a retryable exception
    */
   public static <T, E extends Exception> T callWithRetries(
       SupplierWithCheckedException<T, E> makeRequest, Predicate<Exception> isRetryable)
@@ -70,8 +70,8 @@ public class HttpUtils {
    * @param sleepDuration time to sleep between tries
    * @return the response object
    * @throws E if makeRequest throws an exception that is not retryable
-   * @throws SystemException if the maximum number of retries is exhausted, and the last attempt
-   *     threw a retryable exception
+   * @throws InternalServerErrorException if the maximum number of retries is exhausted, and the
+   *     last attempt threw a retryable exception
    */
   public static <T, E extends Exception> T callWithRetries(
       SupplierWithCheckedException<T, E> makeRequest,
@@ -92,8 +92,8 @@ public class HttpUtils {
    * @param <T> type of the response object (i.e. return type of the makeRequest function)
    * @return the response object
    * @throws E if makeRequest throws an exception that is not retryable
-   * @throws SystemException if the maximum number of retries is exhausted, and the last attempt
-   *     threw a retryable exception
+   * @throws InternalServerErrorException if the maximum number of retries is exhausted, and the
+   *     last attempt threw a retryable exception
    */
   public static <T, E extends Exception> T pollWithRetries(
       SupplierWithCheckedException<T, E> makeRequest,
@@ -119,7 +119,7 @@ public class HttpUtils {
    * the result is returned.
    *
    * <p>- If the last attempt threw a retryable exception, then this method re-throws that last
-   * exception wrapped in a {@link SystemException} with a timeout message.
+   * exception wrapped in a {@link InternalServerErrorException} with a timeout message.
    *
    * @param <T> type of the response object (i.e. return type of the makeRequest function)
    * @param makeRequest function to perform the request
@@ -129,8 +129,8 @@ public class HttpUtils {
    * @param sleepDuration time to sleep between tries
    * @return the response object
    * @throws E if makeRequest throws an exception that is not retryable
-   * @throws SystemException if the maximum number of retries is exhausted, and the last attempt
-   *     threw a retryable exception
+   * @throws InternalServerErrorException if the maximum number of retries is exhausted, and the
+   *     last attempt threw a retryable exception
    */
   public static <T, E extends Exception> T pollWithRetries(
       SupplierWithCheckedException<T, E> makeRequest,
@@ -177,7 +177,7 @@ public class HttpUtils {
     } while (numTries <= maxCalls);
 
     // request with retries timed out: re-throw the last exception
-    throw new SystemException(
+    throw new InternalServerErrorException(
         "Request with retries timed out after "
             + numTries
             + " tries: "

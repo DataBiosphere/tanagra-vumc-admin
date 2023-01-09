@@ -14,9 +14,8 @@ security:
   - authorization: [openid, email, profile]
 
 paths:
-  /status:
+  /admin/status:
     get:
-      security: []
       summary: Returns the operational status of the service
       operationId: serviceStatus
       tags: [Unauthenticated]
@@ -26,9 +25,8 @@ paths:
         500:
           description: Service is broken
 
-  /version:
+  /admin/version:
     get:
-      security: []
       summary: Returns the deployed version of the service
       operationId: serviceVersion
       tags: [Unauthenticated]
@@ -42,7 +40,7 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /isAuthorized/{action}/{resourceType}/{resourceId}/{userEmail}:
+  /admin/isAuthorized/{action}/{resourceType}/{resourceId}/{userEmail}:
     parameters:
       - $ref: '#/components/parameters/Action'
       - $ref: '#/components/parameters/ResourceType'
@@ -60,7 +58,7 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /listAuthorizedResources/{resourceType}/{userEmail}:
+  /admin/listAuthorizedResources/{resourceType}/{userEmail}:
     parameters:
       - $ref: '#/components/parameters/ResourceType'
       - $ref: '#/components/parameters/UserEmail'
@@ -74,6 +72,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResourceIdList'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /admin/core-service-test:
+    get:
+      tags: [Test]
+      description: Temporary endpoint to test service-to-service communication with the core Tanagra service.
+      operationId: coreServiceTest
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoreServiceTest'
+        401:
+          description: Unauthorized
         500:
           $ref: '#/components/responses/ServerError'
 
@@ -146,6 +161,14 @@ components:
       type: array
       items:
         type: string
+
+    CoreServiceTest:
+      type: object
+      properties:
+        version:
+          type: string
+        authenticated-user:
+          type: string
 
     ErrorReport:
       type: object

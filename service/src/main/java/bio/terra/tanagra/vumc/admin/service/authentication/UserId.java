@@ -1,38 +1,28 @@
 package bio.terra.tanagra.vumc.admin.service.authentication;
 
-import bio.terra.common.exception.UnauthorizedException;
 import java.io.Serializable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public final class UserId implements Serializable {
   private static final String DISABLED_AUTHENTICATION_USER_ID = "authentication-disabled";
 
   private final String subject;
   private final String email;
+  private final String token;
 
-  private UserId(String subject, String email) {
+  private UserId(String subject, String email, String token) {
     this.subject = subject;
     this.email = email;
+    this.token = token;
   }
 
   /** Build a default user object for when authentication is disabled. */
   public static UserId forDisabledAuthentication() {
-    return new UserId(DISABLED_AUTHENTICATION_USER_ID, DISABLED_AUTHENTICATION_USER_ID);
+    return new UserId(DISABLED_AUTHENTICATION_USER_ID, DISABLED_AUTHENTICATION_USER_ID, "");
   }
 
   /** Build a user object with information from an authentication token. */
-  public static UserId fromToken(String subject, String email) {
-    return new UserId(subject, email);
-  }
-
-  /** Get the current user object from the security context. */
-  public static UserId currentUser() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (!(authentication instanceof UserAuthentication)) {
-      throw new UnauthorizedException("Error loading user authentication object");
-    }
-    return ((UserAuthentication) authentication).getPrincipal();
+  public static UserId fromToken(String subject, String email, String token) {
+    return new UserId(subject, email, token);
   }
 
   public String getSubject() {
@@ -41,5 +31,9 @@ public final class UserId implements Serializable {
 
   public String getEmail() {
     return email;
+  }
+
+  public String getToken() {
+    return token;
   }
 }

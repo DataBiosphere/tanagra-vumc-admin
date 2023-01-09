@@ -3,6 +3,8 @@
 setupEnvVars() {
   disableAuthChecks=$1 # 0=false, 1=true
 
+  export ADMIN_TANAGRA_CORE_USE_ADC=true
+
   export ADMIN_DATABASE_NAME=admin_db
   export ADMIN_DB_INITIALIZE_ON_START=false
   export ADMIN_DB_USERNAME=dbuser

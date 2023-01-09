@@ -8,9 +8,9 @@ admin:
   db:
     initialize-on-start: false
     upgrade-on-start: true
-    uri: jdbc:postgresql://127.0.0.1:5432/${ADMIN_DATABASE_NAME}
-    username:
-    password:
+    uri: jdbc:postgresql://127.0.0.1:5432/admin_db
+    username: dbuser
+    password: dbpwd
 
   tanagra-core:
     base-path: https://tanagra-test.api.verily.com
